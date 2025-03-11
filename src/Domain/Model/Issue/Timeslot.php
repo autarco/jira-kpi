@@ -15,9 +15,9 @@ readonly class Timeslot
     ) {
     }
 
-    public function getDuration(): Second
+    public function getDuration(): ?Second
     {
-        return new Second($this->from->diffInWeekdaySeconds($this->to));
+        return $this->to ? new Second($this->from->diffInWeekdaySeconds($this->to)) : null;
     }
 
     public function getDurationBetween(CarbonImmutable $start, CarbonImmutable $end): Second

@@ -5,6 +5,7 @@ namespace Marble\JiraKpi\Domain\Model\Result;
 use Carbon\CarbonImmutable;
 use Marble\JiraKpi\Domain\Model\Issue\IssueType;
 use Marble\JiraKpi\Domain\Model\Unit\StoryPoint;
+use function Marble\JiraKpi\Domain\div;
 
 readonly class MonthlyVelocity
 {
@@ -28,10 +29,6 @@ readonly class MonthlyVelocity
         $ofType = $this->storyPointsPerIssueType[$type->name]->value ?? 0;
         $total  = $this->getTotal();
 
-        if ($total === 0) {
-            return 0;
-        }
-
-        return $ofType / $total;
+        return div($ofType, $total, 0);
     }
 }

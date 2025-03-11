@@ -141,18 +141,18 @@ class JiraClient
     private function mapJiraStatus(?string $jiraName): IssueStatus
     {
         return match (strtolower($jiraName ?? '')) {
-            default                      => IssueStatus::TO_DO,
-            'feedback to process'        => IssueStatus::FEEDBACK_TO_PROCESS,
-            'in progress', 'developing'  => IssueStatus::IN_PROGRESS,
-            'pending tr'                 => IssueStatus::PENDING_TR,
-            'tech review'                => IssueStatus::TECH_REVIEW,
-            'pending fr'                 => IssueStatus::PENDING_FR,
-            'functional review'          => IssueStatus::FUNCTIONAL_REVIEW,
-            'pending acceptance testing' => IssueStatus::PENDING_AT,
-            'acceptance testing'         => IssueStatus::ACCEPTANCE_TESTING,
-            'pending release'            => IssueStatus::PENDING_RELEASE,
-            'done', 'released'           => IssueStatus::DONE,
-            "won't fix", 'duplicate'     => IssueStatus::CANCELLED,
+            default                                         => IssueStatus::TO_DO,
+            'feedback to process'                           => IssueStatus::FEEDBACK_TO_PROCESS,
+            'in progress', 'developing'                     => IssueStatus::IN_PROGRESS,
+            'pending tr'                                    => IssueStatus::PENDING_TR,
+            'tech review'                                   => IssueStatus::TECH_REVIEW,
+            'pending fr'                                    => IssueStatus::PENDING_FR,
+            'functional review'                             => IssueStatus::FUNCTIONAL_REVIEW,
+            'pending acceptance testing', 'pending uat'     => IssueStatus::PENDING_AT,
+            'acceptance testing', 'user acceptance testing' => IssueStatus::ACCEPTANCE_TESTING,
+            'pending release'                               => IssueStatus::PENDING_RELEASE,
+            'done', 'released'                              => IssueStatus::DONE,
+            "won't fix", 'duplicate'                        => IssueStatus::CANCELLED,
         };
     }
 

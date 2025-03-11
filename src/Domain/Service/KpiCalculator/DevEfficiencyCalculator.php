@@ -49,22 +49,11 @@ class DevEfficiencyCalculator extends AbstractKpiCalculator
                 $endTransition   = $transitionRepo->fetchOne(new LatestTransitionQuery($issue, $endStatus));
 
                 if ($startTransition instanceof IssueTransition && $endTransition instanceof IssueTransition) {
-                    $cycleTimes[$issue->getKey()] = $startTransition->getTransitioned()->diffInWeekdaySeconds($endTransition->getTransitioned());
+                    $cycleTimes[$issue->getKey()] = new Second($startTransition->getTransitioned()->diffInWeekdaySeconds($endTransition->getTransitioned()));
                 }
             }
 
-            $avgCycleTime = new Second(array_avg($cycleTimes));
-
-            arsort($cycleTimes);
-
-            $slowest = array_slice($cycleTimes, 0, 3, true);
-            $slowest = array_map(fn(int $value): Second => new Second($value), $slowest);
-
-            array_shift($cycleTimes); // drop slowest one
-
-            $avgCycleTimeWithoutSlowest = new Second(array_avg($cycleTimes));
-
-            return new MonthlyCycleTime($month, $done, $avgCycleTime, $avgCycleTimeWithoutSlowest, $slowest);
+            return new MonthlyCycleTime($month, $done, $cycleTimes);
         });
     }
 

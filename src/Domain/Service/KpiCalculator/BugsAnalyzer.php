@@ -108,7 +108,7 @@ class BugsAnalyzer extends AbstractKpiCalculator
             $activeBugTs = array_filter($activeTs, fn(Timeslot $timeslot): bool => $timeslot->issue->getType() === IssueType::BUG);
             $onBugs      = array_sum(array_map(fn(Timeslot $timeslot): int => $timeslot->getDurationBetween($month, $end)->value, $activeBugTs));
 
-            usort($activeBugTs, fn(Timeslot $a, Timeslot $b): int => $b->getDuration()->value <=> $a->getDuration()->value);
+            usort($activeBugTs, fn(Timeslot $a, Timeslot $b): int => $b->getDuration()->value <=> $a->getDuration()->value); // desc
 
             $slowest = array_slice($activeBugTs, 0, 3);
 

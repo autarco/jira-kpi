@@ -17,7 +17,7 @@ function array_avg(array $values): float
     return div(array_sum($values), count($values));
 }
 
-function div(float|int $numerator, float|int $denominator): float
+function div(float|int $numerator, float|int $denominator, float $fallback = NAN): float
 {
-    return $denominator <> 0 ? $numerator / $denominator : NAN;
+    return $denominator <> 0 ? $numerator / $denominator : $fallback;
 }

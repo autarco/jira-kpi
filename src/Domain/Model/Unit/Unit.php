@@ -11,14 +11,14 @@ readonly abstract class Unit
 
     public static function asc(array $values): array
     {
-        uasort($values, fn(Unit $a, Unit $b) => $a->value <=> $b->value);
+        uasort($values, fn(self $a, self $b) => $a->value <=> $b->value);
 
         return $values;
     }
 
     public static function desc(array $values): array
     {
-        uasort($values, fn(Unit $a, Unit $b) => $b->value <=> $a->value);
+        uasort($values, fn(self $a, self $b) => $b->value <=> $a->value);
 
         return $values;
     }

@@ -17,6 +17,7 @@ class CalcDevelopmentIterationsCommand extends AbstractKpiCommand
     public function __construct(
         private readonly DevEfficiencyCalculator $efficiencyCalculator,
     ) {
+        // TODO: differentiate between project and non-project tickets
         parent::__construct();
     }
 

@@ -27,7 +27,8 @@ class VelocityCalculator extends AbstractKpiCalculator
         return $this->perMonth($numWholeMonths, function (CarbonImmutable $month): MonthlyVelocity {
             $query = new TransitionedToStatusBetweenQuery(IssueStatus::DONE, $month, $month->addMonth());
             /** @var list<Issue> $issues */
-            $issues      = $this->entityManager->getRepository(Issue::class)->fetchMany($query);
+            $issues = $this->entityManager->getRepository(Issue::class)->fetchMany($query);
+            /** @var array<string, StoryPoint> $storyPoints */
             $storyPoints = array_fill_keys(array_column(IssueType::cases(), 'name'), new StoryPoint(0));
 
             foreach ($issues as $issue) {
