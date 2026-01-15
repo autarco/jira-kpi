@@ -11,12 +11,14 @@ use Marble\JiraKpi\Domain\Model\Unit\StoryPoint;
 class Issue implements Entity
 {
     private ?string $causeKey = null;
+    private ?WorkCategory $category = null;
 
     public function __construct(
         private readonly SimpleId $key,
         private IssueType         $type,
         private CarbonImmutable   $created,
         private string            $summary,
+        private ?string           $parentKey,
         private ?StoryPoint       $estimate,
         private IssueStatus       $status,
     ) {
@@ -62,6 +64,16 @@ class Issue implements Entity
         $this->summary = $summary;
     }
 
+    public function getParentKey(): ?string
+    {
+        return $this->parentKey;
+    }
+
+    public function setParentKey(?string $parentKey): void
+    {
+        $this->parentKey = $parentKey;
+    }
+
     public function getEstimate(): ?StoryPoint
     {
         return $this->estimate;
@@ -90,5 +102,15 @@ class Issue implements Entity
     public function setCauseKey(?string $causeKey): void
     {
         $this->causeKey = $causeKey;
+    }
+
+    public function getCategory(): ?WorkCategory
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?WorkCategory $category): void
+    {
+        $this->category = $category;
     }
 }

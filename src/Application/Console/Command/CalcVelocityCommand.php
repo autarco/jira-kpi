@@ -3,6 +3,7 @@
 namespace Marble\JiraKpi\Application\Console\Command;
 
 use Marble\JiraKpi\Domain\Model\Issue\IssueType;
+use Marble\JiraKpi\Domain\Model\Issue\WorkCategory;
 use Marble\JiraKpi\Domain\Model\Result\MonthlyVelocity;
 use Marble\JiraKpi\Domain\Service\KpiCalculator\VelocityCalculator;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -26,17 +27,18 @@ class CalcVelocityCommand extends AbstractKpiCommand
     {
         $velocities = $this->calculator->calculate($this->getNumWholeMonths());
 
-        $this->renderTable($output, ...$velocities);
+        $this->renderTypesTable($output, ...$velocities);
+        $this->renderCategoriesTable($output, ...$velocities);
 
         return Command::SUCCESS;
     }
 
-    private function renderTable(OutputInterface $output, MonthlyVelocity ...$velocities): void
+    private function renderTypesTable(OutputInterface $output, MonthlyVelocity ...$velocities): void
     {
         $table       = new Table($output);
-        $typeNames   = array_column(IssueType::cases(), 'name');
+        $typeNames   = array_column(IssueType::withStoryPoints(), 'name');
         $typeHeaders = array_map(fn(string $name): string => u($name)->lower()->title(), $typeNames);
-        $pastAvg     = $this->calcHistoricalAverages(...array_slice($velocities, 0, -2));
+        $pastAvg     = $this->calcHistoricalAverages(IssueType::withStoryPoints(), 'storyPointsPerIssueType', ...array_slice($velocities, 0, -2));
 
         $table->setHeaders(['Month', ...$typeHeaders, 'Total']);
 
@@ -61,13 +63,43 @@ class CalcVelocityCommand extends AbstractKpiCommand
         $table->render();
     }
 
-    private function calcHistoricalAverages(MonthlyVelocity ...$velocities): array
+    private function renderCategoriesTable(OutputInterface $output, MonthlyVelocity ...$velocities): void
     {
-        $typeNames          = array_column(IssueType::cases(), 'name');
+        $table   = new Table($output);
+        $names   = array_column(WorkCategory::cases(), 'name');
+        $headers = array_map(fn(string $name): string => u($name)->lower()->title(), $names);
+        $pastAvg = $this->calcHistoricalAverages(WorkCategory::cases(), 'storyPointsPerWorkCategory', ...array_slice($velocities, 0, -2));
+
+        $table->setHeaders(['Month', ...$headers, 'Total']);
+
+        foreach ($velocities as $index => $velocity) {
+            $storyPointsPerCategory = array_fill_keys($names, 0);
+
+            foreach ($velocity->storyPointsPerWorkCategory as $category => $storyPoints) {
+                $storyPointsPerCategory[$category] = $storyPoints->value . $this->suffix($velocity->getFractionByCategory(WorkCategory::{$category}), true);
+            }
+
+            $table->addRow([
+                $this->ongoing($velocity->month),
+                ...$storyPointsPerCategory,
+                $velocity->getTotal(),
+            ]);
+
+            if ($index === count($velocities) - 3) {
+                $this->addHistoricalAveragesRow($table, $pastAvg);
+            }
+        }
+
+        $table->render();
+    }
+
+    private function calcHistoricalAverages(array $cases, string $prop, MonthlyVelocity ...$velocities): array
+    {
+        $typeNames          = array_column($cases, 'name');
         $storyPointsPerType = array_fill_keys($typeNames, 0);
 
         foreach ($velocities as $velocity) {
-            foreach ($velocity->storyPointsPerIssueType as $type => $storyPoints) {
+            foreach ($velocity->$prop as $type => $storyPoints) {
                 $storyPointsPerType[$type] += $storyPoints->value;
             }
         }

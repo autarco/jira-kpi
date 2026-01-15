@@ -10,9 +10,11 @@ use Marble\JiraKpi\Domain\Model\Unit\Unit;
  */
 function array_avg(array $values): float
 {
-    if (reset($values) instanceof Unit) {
-        $values = array_column($values, 'value');
-    }
+    array_walk($values, function (&$value) {
+        if ($value instanceof Unit) {
+            $value = $value->value;
+        }
+    });
 
     return div(array_sum($values), count($values));
 }

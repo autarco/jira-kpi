@@ -4,18 +4,21 @@ namespace Marble\JiraKpi\Domain\Model\Result;
 
 use Carbon\CarbonImmutable;
 use Marble\JiraKpi\Domain\Model\Issue\IssueType;
+use Marble\JiraKpi\Domain\Model\Issue\WorkCategory;
 use Marble\JiraKpi\Domain\Model\Unit\StoryPoint;
 use function Marble\JiraKpi\Domain\div;
 
 readonly class MonthlyVelocity
 {
     /**
-     * @param CarbonImmutable $month
+     * @param CarbonImmutable           $month
      * @param array<string, StoryPoint> $storyPointsPerIssueType
+     * @param array<string, StoryPoint> $storyPointsPerWorkCategory
      */
     public function __construct(
         public CarbonImmutable $month,
         public array           $storyPointsPerIssueType,
+        public array           $storyPointsPerWorkCategory,
     ) {
     }
 
@@ -30,5 +33,13 @@ readonly class MonthlyVelocity
         $total  = $this->getTotal();
 
         return div($ofType, $total, 0);
+    }
+
+    public function getFractionByCategory(WorkCategory $category): float
+    {
+        $ofCategory = $this->storyPointsPerWorkCategory[$category->name]->value ?? 0;
+        $total      = $this->getTotal();
+
+        return div($ofCategory, $total, 0);
     }
 }

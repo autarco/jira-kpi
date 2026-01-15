@@ -84,37 +84,6 @@ class CalcBugLeadTimesCommand extends AbstractKpiCommand
         return $result;
     }
 
-    private function renderLatenciesTable(OutputInterface $output, MonthlyBugLeadTime ...$analyses): void
-    {
-        $table   = new Table($output);
-        $pastAvg = $this->calcHistoricalLatencyAverages(...array_slice($analyses, 0, -2));
-
-        $table->setHeaders(['Month', 'Bugs fixed', 'Avg latency', 'Within 1 week', 'Within 2 weeks', 'Within 2 months', 'Within 6 months', 'Hottest bug', '2nd hottest', '3rd hottest']);
-
-        foreach ($analyses as $index => $analysis) {
-            $hottest = $analysis->getHottest(3);
-            $hottest = array_map(fn(string $key, Second $latency): string => sprintf('%s%s', $key, $this->suffix($latency->toDay())),
-                array_keys($hottest), $hottest);
-
-            $table->addRow([
-                $this->ongoing($analysis->month),
-                $analysis->fixed,
-                round($analysis->getAvgLatency()->toDay()->value, 1),
-                $this->perc($analysis->getFractionReportedWithin(1)),
-                $this->perc($analysis->getFractionReportedWithin(2)),
-                $this->perc($analysis->getFractionReportedWithin(8)),
-                $this->perc($analysis->getFractionReportedWithin(26)),
-                ...$hottest,
-            ]);
-
-            if ($index === count($analyses) - 3) {
-                $this->addHistoricalAveragesRow($table, $pastAvg, 3);
-            }
-        }
-
-        $table->render();
-    }
-
     private function calcHistoricalLatencyAverages(MonthlyBugLeadTime ...$analyses): array
     {
         $result = [

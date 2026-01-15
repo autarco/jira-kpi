@@ -3,16 +3,22 @@
 namespace Marble\JiraKpi\Domain\Service\KpiCalculator;
 
 use Carbon\CarbonImmutable;
+use Marble\EntityManager\EntityManager;
 use Marble\JiraKpi\Domain\Model\Issue\Issue;
+use Marble\JiraKpi\Domain\Model\Issue\IssueStatus;
 use Marble\JiraKpi\Domain\Model\Issue\IssueType;
 use Marble\JiraKpi\Domain\Model\Issue\Timeslot;
+use Marble\JiraKpi\Domain\Model\Issue\WorkCategory;
 use Marble\JiraKpi\Domain\Model\Result\MonthlyTimeSpent;
 use Marble\JiraKpi\Domain\Model\Unit\Second;
+use Marble\JiraKpi\Domain\Repository\Query\TransitionedToStatusBetweenQuery;
 use Marble\JiraKpi\Domain\Service\TimeslotCalculator;
+use function Symfony\Component\String\u;
 
 class TimeAnalyzer extends AbstractKpiCalculator
 {
     public function __construct(
+        private readonly EntityManager      $entityManager,
         private readonly TimeslotCalculator $timeslotCalculator,
     ) {
     }
@@ -24,16 +30,17 @@ class TimeAnalyzer extends AbstractKpiCalculator
     public function calculateRelativeTimeSpent(int $monthsBeforeLast): array
     {
         return $this->perMonth($monthsBeforeLast, function (CarbonImmutable $month): MonthlyTimeSpent {
-            $end         = $month->addMonth();
-            $timeslots   = $this->timeslotCalculator->getTimeslotsOverlappingWith($month, $end);
-            $activeTs    = array_filter($timeslots, fn(Timeslot $timeslot): bool => $timeslot->status->isActive() && $timeslot->issue->getType()->hasUsefulActiveTime());
-            $usefulTypes = array_filter(IssueType::cases(), fn(IssueType $type): bool => $type->hasUsefulActiveTime());
+            $end       = $month->addMonth();
+            $timeslots = $this->timeslotCalculator->getTimeslotsOverlappingWith($month, $end);
+            /** @var list<Timeslot> $activeTs */
+            $activeTs   = array_filter($timeslots, fn(Timeslot $timeslot): bool => $timeslot->status->isActive() && $timeslot->issue->getType()->hasUsefulActiveTime());
+            $categories = array_column(WorkCategory::cases(), 'name');
             /** @var array<string, Second> $seconds */
-            $seconds = array_fill_keys(array_column($usefulTypes, 'name'), new Second(0));
+            $seconds = array_fill_keys($categories, new Second(0));
 
             foreach ($activeTs as $timeslot) {
-                $type           = $timeslot->issue->getType()->name;
-                $seconds[$type] = new Second($seconds[$type]->value + $timeslot->getDurationBetween($month, $end)->value);
+                $category           = $timeslot->issue->getCategory()->name;
+                $seconds[$category] = new Second($seconds[$category]->value + $timeslot->getDurationBetween($month, $end)->value);
             }
 
             return new MonthlyTimeSpent($month, $seconds);
@@ -44,7 +51,7 @@ class TimeAnalyzer extends AbstractKpiCalculator
      * @param CarbonImmutable $month
      * @return array<string, Second> [ issue key => time spent ]
      */
-    public function getActiveTimeslots(CarbonImmutable $month): array
+    public function getActiveTimeslotsInMonth(CarbonImmutable $month): array
     {
         $end       = $month->addMonth();
         $timeslots = $this->timeslotCalculator->getTimeslotsOverlappingWith($month, $end);
@@ -57,6 +64,29 @@ class TimeAnalyzer extends AbstractKpiCalculator
                 $base         = $result[$key] ?? new Second(0);
                 $result[$key] = new Second($base->value + $timeslot->getDurationBetween($month, $end)->value);
             }
+        }
+
+        return Second::desc($result);
+    }
+
+    /**
+     * @param CarbonImmutable $month
+     * @return array<string, Second> [ issue key => time spent ]
+     */
+    public function getActiveTimeslotsOfDoneTickets(CarbonImmutable $month): array
+    {
+        $query = new TransitionedToStatusBetweenQuery(IssueStatus::DONE, $month, $month->addMonth());
+        /** @var list<Issue> $issues */
+        $issues = $this->entityManager->getRepository(Issue::class)->fetchMany($query);
+        $issues = array_filter($issues, fn(Issue $issue): bool => $issue->getType() !== IssueType::EPIC);
+        /** @var array<string, Second> $result */
+        $result = [];
+
+        foreach ($issues as $issue) {
+            $timeslots = $this->timeslotCalculator->calculateTimeslots($issue);
+            $seconds   = array_map(fn(Timeslot $timeslot): float => $timeslot->status->isActive() ? $timeslot->getDuration()->value : 0, $timeslots);
+
+            $result[$issue->getKey()] = new Second(array_sum($seconds));
         }
 
         return Second::desc($result);

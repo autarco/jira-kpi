@@ -2,13 +2,16 @@
 
 namespace Marble\JiraKpi\Application\Console\Command;
 
+use Marble\JiraKpi\Domain\Model\Issue\WorkCategory;
 use Marble\JiraKpi\Domain\Model\Result\MonthlyCycleTime;
 use Marble\JiraKpi\Domain\Model\Unit\Second;
 use Marble\JiraKpi\Domain\Service\KpiCalculator\DevEfficiencyCalculator;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use function Marble\JiraKpi\Domain\div;
 
@@ -18,13 +21,23 @@ class CalcCycleTimesCommand extends AbstractKpiCommand
     public function __construct(
         private readonly DevEfficiencyCalculator $efficiencyCalculator,
     ) {
-        // TODO: differentiate between project and non-project tickets
         parent::__construct();
+    }
+
+    protected function configure(): void
+    {
+        $this->addArgument('category', InputArgument::OPTIONAL, 'Work category');
+        $this->addOption('relative', 'r', InputOption::VALUE_NONE, 'Show days per story point');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $cycleTimes = $this->efficiencyCalculator->calculateCycleTime($this->getNumWholeMonths());
+        if ($category = $input->getArgument('category')) {
+            $category = WorkCategory::{strtoupper($category)};
+        }
+
+        $relative   = $input->getOption('relative');
+        $cycleTimes = $this->efficiencyCalculator->calculateCycleTime($this->getNumWholeMonths(), $category, $relative);
 
         $this->renderTable($output, ...$cycleTimes);
 
@@ -49,9 +62,9 @@ class CalcCycleTimesCommand extends AbstractKpiCommand
                 round($cycleTime->getAvgCycleTime()->toDay()->value, 1),
                 round($cycleTime->getAvgCycleTime(true)->toDay()->value, 1),
                 ...array_slice($slowest, 0, 3),
-                round($cycleTime->getQuantile(3)->toDay()->value, 1),
-                round($cycleTime->getQuantile(2)->toDay()->value, 1),
-                round($cycleTime->getQuantile(1)->toDay()->value, 1),
+                round($cycleTime->getQuantile(3)?->toDay()->value ?? NAN, 1),
+                round($cycleTime->getQuantile(2)?->toDay()->value ?? NAN, 1),
+                round($cycleTime->getQuantile(1)?->toDay()->value ?? NAN, 1),
             ]);
 
             if ($index === count($cycleTimes) - 3) {
@@ -71,9 +84,11 @@ class CalcCycleTimesCommand extends AbstractKpiCommand
         ];
 
         foreach ($cycleTimes as $cycleTime) {
-            $result['done']            += $cycleTime->done;
-            $result['avg-cycle-time']  += $cycleTime->done * $cycleTime->getAvgCycleTime()->toDay()->value;
-            $result['without-slowest'] += ($cycleTime->done - 1) * $cycleTime->getAvgCycleTime(true)->toDay()->value;
+            if ($cycleTime->done > 0) {
+                $result['done']            += $cycleTime->done;
+                $result['avg-cycle-time']  += $cycleTime->done * $cycleTime->getAvgCycleTime()->toDay()->value;
+                $result['without-slowest'] += ($cycleTime->done - 1) * $cycleTime->getAvgCycleTime(true)->toDay()->value;
+            }
         }
 
         $result['avg-cycle-time']  = round(div($result['avg-cycle-time'], $result['done']), 1);

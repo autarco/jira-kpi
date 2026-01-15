@@ -7,6 +7,7 @@ use Marble\EntityManager\EntityManager;
 use Marble\JiraKpi\Domain\Model\Issue\Issue;
 use Marble\JiraKpi\Domain\Model\Issue\IssueStatus;
 use Marble\JiraKpi\Domain\Model\Issue\IssueType;
+use Marble\JiraKpi\Domain\Model\Issue\WorkCategory;
 use Marble\JiraKpi\Domain\Model\Result\MonthlyVelocity;
 use Marble\JiraKpi\Domain\Model\Unit\StoryPoint;
 use Marble\JiraKpi\Domain\Repository\Query\TransitionedToStatusBetweenQuery;
@@ -28,15 +29,21 @@ class VelocityCalculator extends AbstractKpiCalculator
             $query = new TransitionedToStatusBetweenQuery(IssueStatus::DONE, $month, $month->addMonth());
             /** @var list<Issue> $issues */
             $issues = $this->entityManager->getRepository(Issue::class)->fetchMany($query);
-            /** @var array<string, StoryPoint> $storyPoints */
-            $storyPoints = array_fill_keys(array_column(IssueType::cases(), 'name'), new StoryPoint(0));
+            /** @var array<string, StoryPoint> $spPerType */
+            $spPerType = array_fill_keys(array_column(IssueType::cases(), 'name'), new StoryPoint(0));
+            /** @var array<string, StoryPoint> $spPerCategory */
+            $spPerCategory = array_fill_keys(array_column(WorkCategory::cases(), 'name'), new StoryPoint(0));
 
             foreach ($issues as $issue) {
-                $type               = $issue->getType()->name;
-                $storyPoints[$type] = new StoryPoint($storyPoints[$type]->value + ($issue->getEstimate()?->value ?? 0));
+                $type                     = $issue->getType()->name;
+                $spPerType[$type]         = new StoryPoint($spPerType[$type]->value + ($issue->getEstimate()?->value ?? 0));
+                $category                 = $issue->getCategory()->name;
+                $spPerCategory[$category] = new StoryPoint($spPerCategory[$category]->value + ($issue->getEstimate()?->value ?? 0));
             }
 
-            return new MonthlyVelocity($month, $storyPoints);
+            unset($spPerType[IssueType::EPIC->name]);
+
+            return new MonthlyVelocity($month, $spPerType, $spPerCategory);
         });
     }
 }

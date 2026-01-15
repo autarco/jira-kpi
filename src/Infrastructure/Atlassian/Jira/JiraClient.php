@@ -9,6 +9,7 @@ use Marble\JiraKpi\Domain\Model\Issue\Issue;
 use Marble\JiraKpi\Domain\Model\Issue\IssueStatus;
 use Marble\JiraKpi\Domain\Model\Issue\IssueTransition;
 use Marble\JiraKpi\Domain\Model\Issue\IssueType;
+use Marble\JiraKpi\Domain\Model\Issue\WorkCategory;
 use Marble\JiraKpi\Domain\Model\Unit\StoryPoint;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -30,35 +31,41 @@ class JiraClient
 
     public function importIssues(CarbonImmutable $updatedAfter): void
     {
-        $pageStart = 0;
+        $nextPageToken = null;
 
         do {
-            $response = $this->http->request('GET', 'search', [
+            $response = $this->http->request('GET', 'search/jql', [
                 'query' => [
-                    'jql'        => sprintf('project = AUT and updated >= "%s" order by key ASC', $updatedAfter->toDateString()),
-                    'fields'     => '*all',
-                    'maxResults' => self::PAGE_SIZE,
-                    'startAt'    => $pageStart,
+                    'jql'           => sprintf('project IN (%s) and updated >= "%s" order by key ASC', $_ENV['PROJECT_KEY'], $updatedAfter->toDateString()),
+                    'fields'        => 'summary,customfield_10028,created,issuetype,labels,status,issuelinks,parent',
+                    'maxResults'    => self::PAGE_SIZE,
+                    'nextPageToken' => $nextPageToken,
                 ],
             ]);
 
-            $payload   = $response->toArray()['issues'];
-            $pageStart += count($payload);
+            $payload       = $response->toArray();
+            $nextPageToken = $payload['nextPageToken'] ?? null;
+            $issues        = $payload['issues'];
 
-            $this->logger->notice(sprintf('Importing %d issues (%s - %s)', count($payload), $payload[0]['key'], $payload[array_key_last($payload)]['key']));
+            if (count($issues) === 0) {
+                break;
+            }
 
-            foreach ($payload as $data) {
+            $this->logger->notice(sprintf('Importing %d issues (%s - %s)', count($issues), $issues[0]['key'], $issues[array_key_last($issues)]['key']));
+
+            foreach ($issues as $data) {
                 $this->logger->info($data['key']);
 
                 $issue = $this->persistIssue($data['key'], $data['fields']);
 
                 $this->importIssueChangelog($issue);
                 $this->saveCausingIssue($issue, $data['fields']['issuelinks'] ?? []);
+                $this->saveWorkCategory($issue, $data['fields']['labels'] ?? []);
             }
 
             $this->entityManager->flush();
             $this->entityManager->clear();
-        } while (count($payload) === self::PAGE_SIZE);
+        } while (!$payload['isLast']);
     }
 
     private function persistIssue(string $key, array $fields): Issue
@@ -67,11 +74,13 @@ class JiraClient
         $status      = $this->mapJiraStatus($fields['status']['name']);
         $issue       = $this->entityManager->getRepository(Issue::class)->fetchOneBy(['key' => $key]);
         $storyPoints = isset($fields['customfield_10028']) ? new StoryPoint($fields['customfield_10028']) : null;
+        $parent      = isset($fields['parent']) ? new SimpleId($fields['parent']['key']) : null;
 
         if ($issue instanceof Issue) {
             $issue->setType($type);
             $issue->setCreated(CarbonImmutable::make($fields['created']));
             $issue->setSummary($fields['summary']);
+            $issue->setParentKey($parent);
             $issue->setEstimate($storyPoints);
             $issue->setStatus($status);
         } else {
@@ -80,6 +89,7 @@ class JiraClient
                 type: $type,
                 created: CarbonImmutable::make($fields['created']),
                 summary: $fields['summary'],
+                parentKey: $parent,
                 estimate: $storyPoints,
                 status: $status,
             );
@@ -140,8 +150,16 @@ class JiraClient
 
     private function mapJiraStatus(?string $jiraName): IssueStatus
     {
-        return match (strtolower($jiraName ?? '')) {
+        $jiraName = strtolower($jiraName ?? '');
+
+        if ($_ENV['PROJECT_KEY'] !== 'AUT' && $jiraName === 'pending release') {
+            // For mobile dev, due to the release process we'll treat Pending Release as Done.
+            $jiraName = '--considered-done';
+        }
+
+        return match ($jiraName) {
             default                                         => IssueStatus::TO_DO,
+            'selected for development'                      => IssueStatus::SELECTED_FOR_DEV,
             'feedback to process'                           => IssueStatus::FEEDBACK_TO_PROCESS,
             'in progress', 'developing'                     => IssueStatus::IN_PROGRESS,
             'pending tr'                                    => IssueStatus::PENDING_TR,
@@ -151,7 +169,7 @@ class JiraClient
             'pending acceptance testing', 'pending uat'     => IssueStatus::PENDING_AT,
             'acceptance testing', 'user acceptance testing' => IssueStatus::ACCEPTANCE_TESTING,
             'pending release'                               => IssueStatus::PENDING_RELEASE,
-            'done', 'released'                              => IssueStatus::DONE,
+            'done', 'released', '--considered-done'         => IssueStatus::DONE,
             "won't fix", 'duplicate'                        => IssueStatus::CANCELLED,
         };
     }
@@ -165,6 +183,26 @@ class JiraClient
                 $issue->setCauseKey($key);
 
                 return; // issue can have only 1 cause
+            }
+        }
+    }
+
+    private function saveWorkCategory(Issue $issue, array $labels): void
+    {
+        $issue->setCategory(WorkCategory::REQUEST); // default
+
+        if ($issue->getType() === IssueType::BUG) {
+            $issue->setCategory(WorkCategory::BUG);
+        }
+
+        $projectLabels = ['ProjectTicket'];
+        $techLabels    = ['tech-modernization'];
+
+        foreach ($labels as $label) {
+            if (in_array($label, $projectLabels)) {
+                $issue->setCategory(WorkCategory::ROADMAP);
+            } elseif (in_array($label, $techLabels)) {
+                $issue->setCategory(WorkCategory::TECH);
             }
         }
     }

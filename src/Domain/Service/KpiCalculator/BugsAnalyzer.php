@@ -14,6 +14,7 @@ use Marble\JiraKpi\Domain\Model\Issue\Timeslot;
 use Marble\JiraKpi\Domain\Model\Result\MonthlyBugCreation;
 use Marble\JiraKpi\Domain\Model\Result\MonthlyBugFixingTime;
 use Marble\JiraKpi\Domain\Model\Result\MonthlyBugLeadTime;
+use Marble\JiraKpi\Domain\Model\Unit\Day;
 use Marble\JiraKpi\Domain\Model\Unit\Second;
 use Marble\JiraKpi\Domain\Model\Unit\StoryPoint;
 use Marble\JiraKpi\Domain\Repository\Query\BugsReportedBetweenQuery;
@@ -41,13 +42,29 @@ class BugsAnalyzer extends AbstractKpiCalculator
             $issues      = $this->entityManager->getRepository(Issue::class)->fetchMany(new BugsReportedBetweenQuery($month, $month->addMonth()));
             $created     = count($issues);
             $estimated   = count(array_filter($issues, fn(Issue $issue): bool => $issue->getEstimate() !== null));
-            $storyPoints = array_sum(array_map(fn(Issue $issue): int => $issue->getEstimate()->value ?? 0, $issues));
+            $storyPoints = new StoryPoint(array_sum(array_map(fn(Issue $issue): int => $issue->getEstimate()->value ?? 0, $issues)));
+            $latencies   = [];
+
+            foreach ($issues as $issue) {
+                if ($causeKey = $issue->getCauseKey()) {
+                    $latencies[$issue->getKey()] = (new Day(365))->toSecond(); // if we don't have the causing issue here, it's gonna be old
+
+                    if ($cause = $this->entityManager->getRepository(Issue::class)->fetchOne(new SimpleId($causeKey))) {
+                        $transition = $this->entityManager->getRepository(IssueTransition::class)->fetchOne(new LatestTransitionQuery($cause, IssueStatus::DONE));
+
+                        if ($transition instanceof IssueTransition) {
+                            $latencies[$issue->getKey()] = new Second($transition->getTransitioned()->diffInWeekdaySeconds($issue->getCreated()));
+                        }
+                    }
+                }
+            }
 
             return new MonthlyBugCreation(
                 $month,
                 $created,
                 $estimated,
-                new StoryPoint($storyPoints),
+                $storyPoints,
+                $latencies,
             );
         });
     }
@@ -64,7 +81,7 @@ class BugsAnalyzer extends AbstractKpiCalculator
             /** @var list<Issue> $issues */
             $issues    = array_filter($issues, fn(Issue $issue): bool => $issue->getType() === IssueType::BUG);
             $fixed     = count($issues);
-            $leadTimes = $latencies = [];
+            $leadTimes = [];
 
             foreach ($issues as $issue) {
                 $key        = $issue->getKey();
@@ -73,27 +90,12 @@ class BugsAnalyzer extends AbstractKpiCalculator
                 if ($transition instanceof IssueTransition) {
                     $leadTimes[$key] = new Second($issue->getCreated()->diffInWeekdaySeconds($transition->getTransitioned()));
                 }
-
-                $latency = MonthlyBugLeadTime::WEEKDAY_SECONDS_IN_WEEK * 52; // default to 1 year old
-
-                if ($causeKey = $issue->getCauseKey()) {
-                    if ($cause = $this->entityManager->getRepository(Issue::class)->fetchOne(new SimpleId($causeKey))) {
-                        $transition = $this->entityManager->getRepository(IssueTransition::class)->fetchOne(new LatestTransitionQuery($cause, IssueStatus::DONE));
-
-                        if ($transition instanceof IssueTransition) {
-                            $latency =$transition->getTransitioned()->diffInWeekdaySeconds($issue->getCreated());
-                        }
-                    }
-                }
-
-                $latencies[$key] = new Second($latency);
             }
 
             return new MonthlyBugLeadTime(
                 $month,
                 $fixed,
                 $leadTimes,
-                $latencies,
             );
         });
     }

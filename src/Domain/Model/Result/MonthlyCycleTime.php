@@ -28,7 +28,7 @@ readonly class MonthlyCycleTime
     {
         $cycleTimes = $this->cycleTimes;
 
-        if ($ignoreSlowest) {
+        if ($ignoreSlowest && count($cycleTimes) > 1) {
             array_shift($cycleTimes); // drop slowest one
         }
 
@@ -37,15 +37,15 @@ readonly class MonthlyCycleTime
 
     public function getSlowest(int $num = 3): array
     {
-        return array_slice($this->cycleTimes, 0, 3, true);
+        return array_slice($this->cycleTimes, 0, $num, true);
     }
 
-    public function getQuantile(int $which, int $parts = 4): Second
+    public function getQuantile(int $which, int $parts = 4): ?Second
     {
         $cycleTimes = array_values(array_reverse($this->cycleTimes, true)); // asc
         $size       = count($cycleTimes);
-        $index      = floor($which * ($size / $parts));
+        $index      = (int) floor($which * ($size / $parts));
 
-        return $cycleTimes[$index];
+        return $size > 0 ? $cycleTimes[$index] : null;
     }
 }

@@ -196,6 +196,8 @@ abstract class BaseEntityMapper implements EntityReader, EntityWriter
                     $value = $context->getRepository($fieldType)->fetchOne(new SimpleId($value));
                 } elseif (is_a($fieldType, Unit::class, true)) {
                     $value = new $fieldType($value);
+                } elseif (is_a($fieldType, SimpleId::class, true)) {
+                    $value = new SimpleId($value);
                 }
             }
 

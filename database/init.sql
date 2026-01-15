@@ -10,9 +10,11 @@ CREATE TABLE `issue`
     `type`      varchar(255) COLLATE utf8_unicode_ci NOT NULL,
     `created`   timestamp                            NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `summary`   varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+    `parent`    varchar(255) COLLATE utf8_unicode_ci          DEFAULT NULL,
     `estimate`  smallint(6)                                   DEFAULT NULL,
     `status`    varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-    `cause_key` varchar(255) COLLATE utf8_unicode_ci          DEFAULT NULL
+    `cause_key` varchar(255) COLLATE utf8_unicode_ci          DEFAULT NULL,
+    `category`  varchar(255) COLLATE utf8_unicode_ci          DEFAULT NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_unicode_ci;

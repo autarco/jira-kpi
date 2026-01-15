@@ -23,10 +23,6 @@ class CalcDevelopmentIterationsCommand extends AbstractKpiCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $devIterations = $this->efficiencyCalculator->calculateDevIterations($this->getNumWholeMonths());
-
-        $this->renderTable($output, ...$devIterations);
-
         $devIterations = $this->efficiencyCalculator->calculateDevIterationsUsingFeedbackToProcess($this->getNumWholeMonths());
 
         $this->renderTable($output, ...$devIterations);

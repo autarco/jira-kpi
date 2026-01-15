@@ -9,9 +9,11 @@ use Marble\JiraKpi\Domain\Model\Issue\IssueStatus;
 use Marble\JiraKpi\Domain\Model\Issue\IssueTransition;
 use Marble\JiraKpi\Domain\Model\Issue\IssueType;
 use Marble\JiraKpi\Domain\Model\Issue\Timeslot;
+use Marble\JiraKpi\Domain\Model\Issue\WorkCategory;
 use Marble\JiraKpi\Domain\Model\Result\MonthlyCycleTime;
 use Marble\JiraKpi\Domain\Model\Result\MonthlyDevIterations;
 use Marble\JiraKpi\Domain\Model\Result\MonthlyTimePendingRelease;
+use Marble\JiraKpi\Domain\Model\Result\MonthlyWaitingTime;
 use Marble\JiraKpi\Domain\Model\Unit\Second;
 use Marble\JiraKpi\Domain\Repository\Query\EarliestTransitionQuery;
 use Marble\JiraKpi\Domain\Repository\Query\LatestTransitionQuery;
@@ -29,16 +31,24 @@ class DevEfficiencyCalculator extends AbstractKpiCalculator
     }
 
     /**
-     * @param int $numWholeMonths
      * @return list<MonthlyCycleTime>
      */
-    public function calculateCycleTime(int $numWholeMonths): array
+    public function calculateCycleTime(int $numWholeMonths, ?WorkCategory $category, bool $perStoryPoint): array
     {
-        return $this->perMonth($numWholeMonths, function (CarbonImmutable $month): MonthlyCycleTime {
-            $query = new TransitionedToStatusBetweenQuery(IssueStatus::DONE, $month, $month->addMonth());
+        return $this->perMonth($numWholeMonths, function (CarbonImmutable $month) use ($category, $perStoryPoint): MonthlyCycleTime {
+            $query  = new TransitionedToStatusBetweenQuery(IssueStatus::DONE, $month, $month->addMonth());
+            $issues = $this->entityManager->getRepository(Issue::class)->fetchMany($query);
+            $issues = array_filter($issues, fn(Issue $issue): bool => $issue->getType() !== IssueType::EPIC);
+
+            if ($category !== null) {
+                $issues = array_filter($issues, fn(Issue $issue): bool => $issue->getCategory() === $category);
+            }
+
+            if ($perStoryPoint) {
+                $issues = array_filter($issues, fn(Issue $issue): bool => $issue->getEstimate() !== null);
+            }
+
             /** @var list<Issue> $issues */
-            $issues         = $this->entityManager->getRepository(Issue::class)->fetchMany($query);
-            $issues         = array_filter($issues, fn(Issue $issue): bool => $issue->getType() !== IssueType::EPIC);
             $transitionRepo = $this->entityManager->getRepository(IssueTransition::class);
             $done           = count($issues);
             $cycleTimes     = [];
@@ -49,7 +59,13 @@ class DevEfficiencyCalculator extends AbstractKpiCalculator
                 $endTransition   = $transitionRepo->fetchOne(new LatestTransitionQuery($issue, $endStatus));
 
                 if ($startTransition instanceof IssueTransition && $endTransition instanceof IssueTransition) {
-                    $cycleTimes[$issue->getKey()] = new Second($startTransition->getTransitioned()->diffInWeekdaySeconds($endTransition->getTransitioned()));
+                    $seconds = new Second($startTransition->getTransitioned()->diffInWeekdaySeconds($endTransition->getTransitioned()));
+
+                    if ($perStoryPoint) {
+                        $seconds = new Second(round($seconds->value / $issue->getEstimate()->value));
+                    }
+
+                    $cycleTimes[$issue->getKey()] = $seconds;
                 }
             }
 
@@ -162,5 +178,38 @@ class DevEfficiencyCalculator extends AbstractKpiCalculator
                 $slowest,
             );
         });
+    }
+
+    public function calculateWaitingTimes(?WorkCategory $category): MonthlyWaitingTime
+    {
+            $query      = new TransitionedToStatusBetweenQuery(IssueStatus::DONE, $from = CarbonImmutable::parse('2025-02-01'), CarbonImmutable::now());
+            $issues     = $this->entityManager->getRepository(Issue::class)->fetchMany($query);
+            $issues     = array_filter($issues, fn(Issue $issue): bool => $issue->getType() !== IssueType::EPIC);
+            $tsPerIssue = [];
+
+            if ($category !== null) {
+                $issues = array_filter($issues, fn(Issue $issue): bool => $issue->getCategory() === $category);
+            }
+
+            foreach ($issues as $issue) {
+                $timeslots = $this->timeslotCalculator->calculateTimeslots($issue);
+
+                foreach ($timeslots as $timeslot) {
+                    if ($issue->getType() === IssueType::SUBTASK && $issue->getParentKey() !== null) {
+                        // Append subtask timeslots to parent timeslots.
+                        $effectiveKey = $issue->getParentKey();
+                    } else {
+                        $effectiveKey = $issue->getKey();
+                    }
+
+                    $tsPerIssue[$effectiveKey][] = $timeslot;
+                }
+            }
+
+            return new MonthlyWaitingTime(
+                $from,
+                $tsPerIssue,
+                $issues,
+            );
     }
 }
