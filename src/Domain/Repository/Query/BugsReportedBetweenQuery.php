@@ -1,6 +1,6 @@
 <?php
 
-namespace Marble\JiraKpi\Domain\Repository\Query;
+namespace Autarco\JiraKpi\Domain\Repository\Query;
 
 use Carbon\CarbonImmutable;
 

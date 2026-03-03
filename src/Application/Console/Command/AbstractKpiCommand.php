@@ -1,9 +1,9 @@
 <?php
 
-namespace Marble\JiraKpi\Application\Console\Command;
+namespace Autarco\JiraKpi\Application\Console\Command;
 
 use Carbon\CarbonImmutable;
-use Marble\JiraKpi\Domain\Model\Unit\Unit;
+use Autarco\JiraKpi\Domain\Model\Unit\Unit;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;

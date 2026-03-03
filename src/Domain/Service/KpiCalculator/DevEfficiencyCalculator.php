@@ -1,26 +1,26 @@
 <?php
 
-namespace Marble\JiraKpi\Domain\Service\KpiCalculator;
+namespace Autarco\JiraKpi\Domain\Service\KpiCalculator;
 
 use Carbon\CarbonImmutable;
 use Marble\EntityManager\EntityManager;
-use Marble\JiraKpi\Domain\Model\Issue\Issue;
-use Marble\JiraKpi\Domain\Model\Issue\IssueStatus;
-use Marble\JiraKpi\Domain\Model\Issue\IssueTransition;
-use Marble\JiraKpi\Domain\Model\Issue\IssueType;
-use Marble\JiraKpi\Domain\Model\Issue\Timeslot;
-use Marble\JiraKpi\Domain\Model\Issue\WorkCategory;
-use Marble\JiraKpi\Domain\Model\Result\MonthlyCycleTime;
-use Marble\JiraKpi\Domain\Model\Result\MonthlyDevIterations;
-use Marble\JiraKpi\Domain\Model\Result\MonthlyTimePendingRelease;
-use Marble\JiraKpi\Domain\Model\Result\MonthlyWaitingTime;
-use Marble\JiraKpi\Domain\Model\Unit\Second;
-use Marble\JiraKpi\Domain\Repository\Query\EarliestTransitionQuery;
-use Marble\JiraKpi\Domain\Repository\Query\LatestTransitionQuery;
-use Marble\JiraKpi\Domain\Repository\Query\TransitionedFromStatusBetweenQuery;
-use Marble\JiraKpi\Domain\Repository\Query\TransitionedToStatusBetweenQuery;
-use Marble\JiraKpi\Domain\Service\TimeslotCalculator;
-use function Marble\JiraKpi\Domain\array_avg;
+use Autarco\JiraKpi\Domain\Model\Issue\Issue;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueStatus;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueTransition;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueType;
+use Autarco\JiraKpi\Domain\Model\Issue\Timeslot;
+use Autarco\JiraKpi\Domain\Model\Issue\WorkCategory;
+use Autarco\JiraKpi\Domain\Model\Result\MonthlyCycleTime;
+use Autarco\JiraKpi\Domain\Model\Result\MonthlyDevIterations;
+use Autarco\JiraKpi\Domain\Model\Result\MonthlyTimePendingRelease;
+use Autarco\JiraKpi\Domain\Model\Result\MonthlyWaitingTime;
+use Autarco\JiraKpi\Domain\Model\Unit\Second;
+use Autarco\JiraKpi\Domain\Repository\Query\EarliestTransitionQuery;
+use Autarco\JiraKpi\Domain\Repository\Query\LatestTransitionQuery;
+use Autarco\JiraKpi\Domain\Repository\Query\TransitionedFromStatusBetweenQuery;
+use Autarco\JiraKpi\Domain\Repository\Query\TransitionedToStatusBetweenQuery;
+use Autarco\JiraKpi\Domain\Service\TimeslotCalculator;
+use function Autarco\JiraKpi\Domain\array_avg;
 
 class DevEfficiencyCalculator extends AbstractKpiCalculator
 {

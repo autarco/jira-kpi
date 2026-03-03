@@ -1,12 +1,12 @@
 <?php
 
-namespace Marble\JiraKpi\Domain\Model\Result;
+namespace Autarco\JiraKpi\Domain\Model\Result;
 
 use Carbon\CarbonImmutable;
-use Marble\JiraKpi\Domain\Model\Issue\IssueType;
-use Marble\JiraKpi\Domain\Model\Issue\WorkCategory;
-use Marble\JiraKpi\Domain\Model\Unit\Second;
-use function Marble\JiraKpi\Domain\div;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueType;
+use Autarco\JiraKpi\Domain\Model\Issue\WorkCategory;
+use Autarco\JiraKpi\Domain\Model\Unit\Second;
+use function Autarco\JiraKpi\Domain\div;
 
 readonly class MonthlyTimeSpent
 {

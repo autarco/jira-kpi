@@ -1,14 +1,17 @@
 <?php
 
-namespace Marble\JiraKpi\Infrastructure\Database\Mapper;
+namespace Autarco\JiraKpi\Infrastructure\Database\Mapper;
 
 use Doctrine\DBAL\Query\QueryBuilder;
-use Marble\JiraKpi\Domain\Model\Issue\Issue;
-use Marble\JiraKpi\Domain\Model\Issue\IssueStatus;
-use Marble\JiraKpi\Domain\Model\Issue\IssueType;
-use Marble\JiraKpi\Domain\Repository\Query\BugsReportedBetweenQuery;
-use Marble\JiraKpi\Domain\Repository\Query\TransitionedToStatusBetweenQuery;
+use Autarco\JiraKpi\Domain\Model\Issue\Issue;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueStatus;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueType;
+use Autarco\JiraKpi\Domain\Repository\Query\BugsReportedBetweenQuery;
+use Autarco\JiraKpi\Domain\Repository\Query\TransitionedToStatusBetweenQuery;
 
+/**
+ * @extends BaseEntityMapper<Issue>
+ */
 class IssueMapper extends BaseEntityMapper
 {
     public static function getEntityClassName(): string

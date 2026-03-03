@@ -1,18 +1,18 @@
 <?php
 
-namespace Marble\JiraKpi\Domain\Service\KpiCalculator;
+namespace Autarco\JiraKpi\Domain\Service\KpiCalculator;
 
 use Carbon\CarbonImmutable;
 use Marble\EntityManager\EntityManager;
-use Marble\JiraKpi\Domain\Model\Issue\Issue;
-use Marble\JiraKpi\Domain\Model\Issue\IssueStatus;
-use Marble\JiraKpi\Domain\Model\Issue\IssueType;
-use Marble\JiraKpi\Domain\Model\Issue\Timeslot;
-use Marble\JiraKpi\Domain\Model\Issue\WorkCategory;
-use Marble\JiraKpi\Domain\Model\Result\MonthlyTimeSpent;
-use Marble\JiraKpi\Domain\Model\Unit\Second;
-use Marble\JiraKpi\Domain\Repository\Query\TransitionedToStatusBetweenQuery;
-use Marble\JiraKpi\Domain\Service\TimeslotCalculator;
+use Autarco\JiraKpi\Domain\Model\Issue\Issue;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueStatus;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueType;
+use Autarco\JiraKpi\Domain\Model\Issue\Timeslot;
+use Autarco\JiraKpi\Domain\Model\Issue\WorkCategory;
+use Autarco\JiraKpi\Domain\Model\Result\MonthlyTimeSpent;
+use Autarco\JiraKpi\Domain\Model\Unit\Second;
+use Autarco\JiraKpi\Domain\Repository\Query\TransitionedToStatusBetweenQuery;
+use Autarco\JiraKpi\Domain\Service\TimeslotCalculator;
 use function Symfony\Component\String\u;
 
 class TimeAnalyzer extends AbstractKpiCalculator

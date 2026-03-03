@@ -1,9 +1,9 @@
 <?php
 
-namespace Marble\JiraKpi\Domain\Model\Issue;
+namespace Autarco\JiraKpi\Domain\Model\Issue;
 
 use Carbon\CarbonImmutable;
-use Marble\JiraKpi\Domain\Model\Unit\Second;
+use Autarco\JiraKpi\Domain\Model\Unit\Second;
 
 readonly class Timeslot
 {

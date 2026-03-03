@@ -1,9 +1,9 @@
 <?php
 
-namespace Marble\JiraKpi\Domain\Repository\Query;
+namespace Autarco\JiraKpi\Domain\Repository\Query;
 
-use Marble\JiraKpi\Domain\Model\Issue\Issue;
-use Marble\JiraKpi\Domain\Model\Issue\IssueStatus;
+use Autarco\JiraKpi\Domain\Model\Issue\Issue;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueStatus;
 
 readonly class EarliestTransitionQuery
 {

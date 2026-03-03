@@ -1,10 +1,10 @@
 <?php
 
-namespace Marble\JiraKpi\Application\Console\Command;
+namespace Autarco\JiraKpi\Application\Console\Command;
 
 use Carbon\CarbonImmutable;
 use Marble\EntityManager\EntityManager;
-use Marble\JiraKpi\Infrastructure\Atlassian\Jira\JiraClient;
+use Autarco\JiraKpi\Infrastructure\Atlassian\Jira\JiraClient;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;

@@ -1,10 +1,10 @@
 <?php
 
-namespace Marble\JiraKpi\Domain\Model\Result;
+namespace Autarco\JiraKpi\Domain\Model\Result;
 
 use Carbon\CarbonImmutable;
-use Marble\JiraKpi\Domain\Model\Unit\Second;
-use function Marble\JiraKpi\Domain\array_avg;
+use Autarco\JiraKpi\Domain\Model\Unit\Second;
+use function Autarco\JiraKpi\Domain\array_avg;
 
 readonly class MonthlyCycleTime
 {

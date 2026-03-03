@@ -1,9 +1,9 @@
 <?php
 
-namespace Marble\JiraKpi\Domain\Model\Result;
+namespace Autarco\JiraKpi\Domain\Model\Result;
 
 use Carbon\CarbonImmutable;
-use function Marble\JiraKpi\Domain\div;
+use function Autarco\JiraKpi\Domain\div;
 
 readonly class MonthlyDevIterations
 {

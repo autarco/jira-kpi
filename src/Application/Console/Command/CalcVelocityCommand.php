@@ -1,17 +1,17 @@
 <?php
 
-namespace Marble\JiraKpi\Application\Console\Command;
+namespace Autarco\JiraKpi\Application\Console\Command;
 
-use Marble\JiraKpi\Domain\Model\Issue\IssueType;
-use Marble\JiraKpi\Domain\Model\Issue\WorkCategory;
-use Marble\JiraKpi\Domain\Model\Result\MonthlyVelocity;
-use Marble\JiraKpi\Domain\Service\KpiCalculator\VelocityCalculator;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueType;
+use Autarco\JiraKpi\Domain\Model\Issue\WorkCategory;
+use Autarco\JiraKpi\Domain\Model\Result\MonthlyVelocity;
+use Autarco\JiraKpi\Domain\Service\KpiCalculator\VelocityCalculator;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use function Marble\JiraKpi\Domain\div;
+use function Autarco\JiraKpi\Domain\div;
 use function Symfony\Component\String\u;
 
 #[AsCommand(name: 'app:velocity')]

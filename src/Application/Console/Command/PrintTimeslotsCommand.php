@@ -1,11 +1,11 @@
 <?php
 
-namespace Marble\JiraKpi\Application\Console\Command;
+namespace Autarco\JiraKpi\Application\Console\Command;
 
 use Marble\EntityManager\EntityManager;
-use Marble\JiraKpi\Domain\Model\Issue\Issue;
-use Marble\JiraKpi\Domain\Model\Unit\Second;
-use Marble\JiraKpi\Domain\Service\TimeslotCalculator;
+use Autarco\JiraKpi\Domain\Model\Issue\Issue;
+use Autarco\JiraKpi\Domain\Model\Unit\Second;
+use Autarco\JiraKpi\Domain\Service\TimeslotCalculator;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;

@@ -1,18 +1,21 @@
 <?php
 
-namespace Marble\JiraKpi\Infrastructure\Database\Mapper;
+namespace Autarco\JiraKpi\Infrastructure\Database\Mapper;
 
 use Doctrine\DBAL\Query\QueryBuilder;
-use Marble\JiraKpi\Domain\Model\Issue\IssueStatus;
-use Marble\JiraKpi\Domain\Model\Issue\IssueTransition;
-use Marble\JiraKpi\Domain\Repository\Query\EarliestTransitionQuery;
-use Marble\JiraKpi\Domain\Repository\Query\FirstTransitionAfterQuery;
-use Marble\JiraKpi\Domain\Repository\Query\LastTransitionBeforeQuery;
-use Marble\JiraKpi\Domain\Repository\Query\LatestTransitionQuery;
-use Marble\JiraKpi\Domain\Repository\Query\TransitionedBetweenQuery;
-use Marble\JiraKpi\Domain\Repository\Query\TransitionedFromStatusBetweenQuery;
-use Marble\JiraKpi\Domain\Repository\Query\TransitionedToStatusBetweenQuery;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueStatus;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueTransition;
+use Autarco\JiraKpi\Domain\Repository\Query\EarliestTransitionQuery;
+use Autarco\JiraKpi\Domain\Repository\Query\FirstTransitionAfterQuery;
+use Autarco\JiraKpi\Domain\Repository\Query\LastTransitionBeforeQuery;
+use Autarco\JiraKpi\Domain\Repository\Query\LatestTransitionQuery;
+use Autarco\JiraKpi\Domain\Repository\Query\TransitionedBetweenQuery;
+use Autarco\JiraKpi\Domain\Repository\Query\TransitionedFromStatusBetweenQuery;
+use Autarco\JiraKpi\Domain\Repository\Query\TransitionedToStatusBetweenQuery;
 
+/**
+ * @extends BaseEntityMapper<IssueTransition>
+ */
 class IssueTransitionMapper extends BaseEntityMapper
 {
     public static function getEntityClassName(): string

@@ -1,18 +1,18 @@
 <?php
 
-namespace Marble\JiraKpi\Application\Console\Command;
+namespace Autarco\JiraKpi\Application\Console\Command;
 
-use Marble\JiraKpi\Domain\Model\Result\MonthlyRework;
-use Marble\JiraKpi\Domain\Model\Unit\Day;
-use Marble\JiraKpi\Domain\Model\Unit\Second;
-use Marble\JiraKpi\Domain\Model\Unit\StoryPoint;
-use Marble\JiraKpi\Domain\Service\KpiCalculator\ReworkCalculator;
+use Autarco\JiraKpi\Domain\Model\Result\MonthlyRework;
+use Autarco\JiraKpi\Domain\Model\Unit\Day;
+use Autarco\JiraKpi\Domain\Model\Unit\Second;
+use Autarco\JiraKpi\Domain\Model\Unit\StoryPoint;
+use Autarco\JiraKpi\Domain\Service\KpiCalculator\ReworkCalculator;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use function Marble\JiraKpi\Domain\array_avg;
+use function Autarco\JiraKpi\Domain\array_avg;
 
 #[AsCommand(name: 'app:rework')]
 class CalcReworkCommand extends AbstractKpiCommand

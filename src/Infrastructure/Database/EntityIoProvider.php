@@ -1,6 +1,6 @@
 <?php
 
-namespace Marble\JiraKpi\Infrastructure\Database;
+namespace Autarco\JiraKpi\Infrastructure\Database;
 
 use Marble\EntityManager\Contract\EntityIoProvider as EntityIoProviderInterface;
 use Marble\EntityManager\Contract\EntityReader;

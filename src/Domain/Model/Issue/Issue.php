@@ -1,12 +1,12 @@
 <?php
 
-namespace Marble\JiraKpi\Domain\Model\Issue;
+namespace Autarco\JiraKpi\Domain\Model\Issue;
 
 use Carbon\CarbonImmutable;
 use Marble\Entity\Entity;
 use Marble\Entity\Identifier;
 use Marble\Entity\SimpleId;
-use Marble\JiraKpi\Domain\Model\Unit\StoryPoint;
+use Autarco\JiraKpi\Domain\Model\Unit\StoryPoint;
 
 class Issue implements Entity
 {

@@ -1,18 +1,18 @@
 <?php
 
-namespace Marble\JiraKpi\Domain\Service\KpiCalculator;
+namespace Autarco\JiraKpi\Domain\Service\KpiCalculator;
 
 use Carbon\CarbonImmutable;
 use Marble\Entity\SimpleId;
 use Marble\EntityManager\EntityManager;
-use Marble\JiraKpi\Domain\Model\Issue\Issue;
-use Marble\JiraKpi\Domain\Model\Issue\IssueStatus;
-use Marble\JiraKpi\Domain\Model\Issue\IssueTransition;
-use Marble\JiraKpi\Domain\Model\Result\MonthlyRework;
-use Marble\JiraKpi\Domain\Model\Unit\Day;
-use Marble\JiraKpi\Domain\Model\Unit\StoryPoint;
-use Marble\JiraKpi\Domain\Repository\Query\LatestTransitionQuery;
-use Marble\JiraKpi\Domain\Repository\Query\TransitionedToStatusBetweenQuery;
+use Autarco\JiraKpi\Domain\Model\Issue\Issue;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueStatus;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueTransition;
+use Autarco\JiraKpi\Domain\Model\Result\MonthlyRework;
+use Autarco\JiraKpi\Domain\Model\Unit\Day;
+use Autarco\JiraKpi\Domain\Model\Unit\StoryPoint;
+use Autarco\JiraKpi\Domain\Repository\Query\LatestTransitionQuery;
+use Autarco\JiraKpi\Domain\Repository\Query\TransitionedToStatusBetweenQuery;
 
 class ReworkCalculator extends AbstractKpiCalculator
 {

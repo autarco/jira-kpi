@@ -1,6 +1,6 @@
 <?php
 
-namespace Marble\JiraKpi\Domain\Model;
+namespace Autarco\JiraKpi\Domain\Model;
 
 use Carbon\CarbonInterface;
 

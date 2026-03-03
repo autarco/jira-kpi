@@ -1,6 +1,6 @@
 <?php
 
-namespace Marble\JiraKpi\Domain\Model\Issue;
+namespace Autarco\JiraKpi\Domain\Model\Issue;
 
 enum IssueType
 {

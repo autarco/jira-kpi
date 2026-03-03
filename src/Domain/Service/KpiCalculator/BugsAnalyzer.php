@@ -1,27 +1,27 @@
 <?php
 
-namespace Marble\JiraKpi\Domain\Service\KpiCalculator;
+namespace Autarco\JiraKpi\Domain\Service\KpiCalculator;
 
 use Carbon\CarbonImmutable;
 use Hamcrest\Core\Is;
 use Marble\Entity\SimpleId;
 use Marble\EntityManager\EntityManager;
-use Marble\JiraKpi\Domain\Model\Issue\Issue;
-use Marble\JiraKpi\Domain\Model\Issue\IssueStatus;
-use Marble\JiraKpi\Domain\Model\Issue\IssueTransition;
-use Marble\JiraKpi\Domain\Model\Issue\IssueType;
-use Marble\JiraKpi\Domain\Model\Issue\Timeslot;
-use Marble\JiraKpi\Domain\Model\Result\MonthlyBugCreation;
-use Marble\JiraKpi\Domain\Model\Result\MonthlyBugFixingTime;
-use Marble\JiraKpi\Domain\Model\Result\MonthlyBugLeadTime;
-use Marble\JiraKpi\Domain\Model\Unit\Day;
-use Marble\JiraKpi\Domain\Model\Unit\Second;
-use Marble\JiraKpi\Domain\Model\Unit\StoryPoint;
-use Marble\JiraKpi\Domain\Repository\Query\BugsReportedBetweenQuery;
-use Marble\JiraKpi\Domain\Repository\Query\LatestTransitionQuery;
-use Marble\JiraKpi\Domain\Repository\Query\TransitionedToStatusBetweenQuery;
-use Marble\JiraKpi\Domain\Service\TimeslotCalculator;
-use function Marble\JiraKpi\Domain\array_avg;
+use Autarco\JiraKpi\Domain\Model\Issue\Issue;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueStatus;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueTransition;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueType;
+use Autarco\JiraKpi\Domain\Model\Issue\Timeslot;
+use Autarco\JiraKpi\Domain\Model\Result\MonthlyBugCreation;
+use Autarco\JiraKpi\Domain\Model\Result\MonthlyBugFixingTime;
+use Autarco\JiraKpi\Domain\Model\Result\MonthlyBugLeadTime;
+use Autarco\JiraKpi\Domain\Model\Unit\Day;
+use Autarco\JiraKpi\Domain\Model\Unit\Second;
+use Autarco\JiraKpi\Domain\Model\Unit\StoryPoint;
+use Autarco\JiraKpi\Domain\Repository\Query\BugsReportedBetweenQuery;
+use Autarco\JiraKpi\Domain\Repository\Query\LatestTransitionQuery;
+use Autarco\JiraKpi\Domain\Repository\Query\TransitionedToStatusBetweenQuery;
+use Autarco\JiraKpi\Domain\Service\TimeslotCalculator;
+use function Autarco\JiraKpi\Domain\array_avg;
 
 class BugsAnalyzer extends AbstractKpiCalculator
 {

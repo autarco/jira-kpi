@@ -1,9 +1,9 @@
 <?php
 
-namespace Marble\JiraKpi\Tests;
+namespace Autarco\JiraKpi\Tests;
 
 use Carbon\CarbonImmutable;
-use Marble\JiraKpi\Domain\Model\Issue\Issue;
+use Autarco\JiraKpi\Domain\Model\Issue\Issue;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery\MockInterface;
 

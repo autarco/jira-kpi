@@ -1,16 +1,16 @@
 <?php
 
-namespace Marble\JiraKpi\Infrastructure\Atlassian\Jira;
+namespace Autarco\JiraKpi\Infrastructure\Atlassian\Jira;
 
 use Carbon\CarbonImmutable;
 use Marble\Entity\SimpleId;
 use Marble\EntityManager\EntityManager;
-use Marble\JiraKpi\Domain\Model\Issue\Issue;
-use Marble\JiraKpi\Domain\Model\Issue\IssueStatus;
-use Marble\JiraKpi\Domain\Model\Issue\IssueTransition;
-use Marble\JiraKpi\Domain\Model\Issue\IssueType;
-use Marble\JiraKpi\Domain\Model\Issue\WorkCategory;
-use Marble\JiraKpi\Domain\Model\Unit\StoryPoint;
+use Autarco\JiraKpi\Domain\Model\Issue\Issue;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueStatus;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueTransition;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueType;
+use Autarco\JiraKpi\Domain\Model\Issue\WorkCategory;
+use Autarco\JiraKpi\Domain\Model\Unit\StoryPoint;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use function Symfony\Component\String\u;

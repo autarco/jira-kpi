@@ -1,16 +1,16 @@
 <?php
 
-namespace Marble\JiraKpi\Domain\Service\KpiCalculator;
+namespace Autarco\JiraKpi\Domain\Service\KpiCalculator;
 
 use Carbon\CarbonImmutable;
 use Marble\EntityManager\EntityManager;
-use Marble\JiraKpi\Domain\Model\Issue\Issue;
-use Marble\JiraKpi\Domain\Model\Issue\IssueStatus;
-use Marble\JiraKpi\Domain\Model\Issue\IssueType;
-use Marble\JiraKpi\Domain\Model\Issue\WorkCategory;
-use Marble\JiraKpi\Domain\Model\Result\MonthlyVelocity;
-use Marble\JiraKpi\Domain\Model\Unit\StoryPoint;
-use Marble\JiraKpi\Domain\Repository\Query\TransitionedToStatusBetweenQuery;
+use Autarco\JiraKpi\Domain\Model\Issue\Issue;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueStatus;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueType;
+use Autarco\JiraKpi\Domain\Model\Issue\WorkCategory;
+use Autarco\JiraKpi\Domain\Model\Result\MonthlyVelocity;
+use Autarco\JiraKpi\Domain\Model\Unit\StoryPoint;
+use Autarco\JiraKpi\Domain\Repository\Query\TransitionedToStatusBetweenQuery;
 
 class VelocityCalculator extends AbstractKpiCalculator
 {

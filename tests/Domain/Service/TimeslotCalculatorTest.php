@@ -1,19 +1,19 @@
 <?php
 
-namespace Marble\JiraKpi\Tests\Domain\Service;
+namespace Autarco\JiraKpi\Tests\Domain\Service;
 
 use Carbon\CarbonImmutable;
 use Marble\EntityManager\EntityManager;
 use Marble\EntityManager\Repository\Repository;
-use Marble\JiraKpi\Domain\Model\Issue\Issue;
-use Marble\JiraKpi\Domain\Model\Issue\IssueStatus;
-use Marble\JiraKpi\Domain\Model\Issue\IssueTransition;
-use Marble\JiraKpi\Domain\Model\Issue\Timeslot;
-use Marble\JiraKpi\Domain\Repository\Query\FirstTransitionAfterQuery;
-use Marble\JiraKpi\Domain\Repository\Query\LastTransitionBeforeQuery;
-use Marble\JiraKpi\Domain\Repository\Query\TransitionedBetweenQuery;
-use Marble\JiraKpi\Domain\Service\TimeslotCalculator;
-use Marble\JiraKpi\Tests\AbstractTestCase;
+use Autarco\JiraKpi\Domain\Model\Issue\Issue;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueStatus;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueTransition;
+use Autarco\JiraKpi\Domain\Model\Issue\Timeslot;
+use Autarco\JiraKpi\Domain\Repository\Query\FirstTransitionAfterQuery;
+use Autarco\JiraKpi\Domain\Repository\Query\LastTransitionBeforeQuery;
+use Autarco\JiraKpi\Domain\Repository\Query\TransitionedBetweenQuery;
+use Autarco\JiraKpi\Domain\Service\TimeslotCalculator;
+use Autarco\JiraKpi\Tests\AbstractTestCase;
 use Mockery;
 use Mockery\MockInterface;
 

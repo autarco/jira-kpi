@@ -1,8 +1,8 @@
 <?php
 
-namespace Marble\JiraKpi\Domain;
+namespace Autarco\JiraKpi\Domain;
 
-use Marble\JiraKpi\Domain\Model\Unit\Unit;
+use Autarco\JiraKpi\Domain\Model\Unit\Unit;
 
 /**
  * @param list<int|float|Unit> $values

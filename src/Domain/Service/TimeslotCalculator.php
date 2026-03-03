@@ -1,15 +1,15 @@
 <?php
 
-namespace Marble\JiraKpi\Domain\Service;
+namespace Autarco\JiraKpi\Domain\Service;
 
 use Carbon\CarbonImmutable;
 use Marble\EntityManager\EntityManager;
-use Marble\JiraKpi\Domain\Model\Issue\Issue;
-use Marble\JiraKpi\Domain\Model\Issue\IssueTransition;
-use Marble\JiraKpi\Domain\Model\Issue\Timeslot;
-use Marble\JiraKpi\Domain\Repository\Query\FirstTransitionAfterQuery;
-use Marble\JiraKpi\Domain\Repository\Query\LastTransitionBeforeQuery;
-use Marble\JiraKpi\Domain\Repository\Query\TransitionedBetweenQuery;
+use Autarco\JiraKpi\Domain\Model\Issue\Issue;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueTransition;
+use Autarco\JiraKpi\Domain\Model\Issue\Timeslot;
+use Autarco\JiraKpi\Domain\Repository\Query\FirstTransitionAfterQuery;
+use Autarco\JiraKpi\Domain\Repository\Query\LastTransitionBeforeQuery;
+use Autarco\JiraKpi\Domain\Repository\Query\TransitionedBetweenQuery;
 
 class TimeslotCalculator
 {

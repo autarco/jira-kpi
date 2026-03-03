@@ -1,14 +1,14 @@
 <?php
 
-namespace Marble\JiraKpi\Domain\Model\Result;
+namespace Autarco\JiraKpi\Domain\Model\Result;
 
 use Carbon\CarbonImmutable;
-use Marble\JiraKpi\Domain\Model\Issue\Issue;
-use Marble\JiraKpi\Domain\Model\Issue\IssueStatus;
-use Marble\JiraKpi\Domain\Model\Issue\Timeslot;
-use Marble\JiraKpi\Domain\Model\Unit\Second;
-use Marble\JiraKpi\Domain\Model\Unit\StoryPoint;
-use function Marble\JiraKpi\Domain\div;
+use Autarco\JiraKpi\Domain\Model\Issue\Issue;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueStatus;
+use Autarco\JiraKpi\Domain\Model\Issue\Timeslot;
+use Autarco\JiraKpi\Domain\Model\Unit\Second;
+use Autarco\JiraKpi\Domain\Model\Unit\StoryPoint;
+use function Autarco\JiraKpi\Domain\div;
 
 readonly class MonthlyWaitingTime
 {

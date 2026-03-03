@@ -17,15 +17,15 @@ services:
 
     # Domain layer
 
-    Marble\JiraKpi\Domain\Service\:
+    Autarco\JiraKpi\Domain\Service\:
         resource: '../src/Domain/Service'
 
     # Application layer
 
-    Marble\JiraKpi\Application\Console\Command\:
+    Autarco\JiraKpi\Application\Console\Command\:
         resource: '../src/Application/Console/Command'
 
     # Infrastructure layer
 
-    Marble\JiraKpi\Infrastructure\:
+    Autarco\JiraKpi\Infrastructure\:
         resource: '../src/Infrastructure'

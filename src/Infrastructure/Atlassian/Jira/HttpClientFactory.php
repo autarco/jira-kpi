@@ -1,6 +1,6 @@
 <?php
 
-namespace Marble\JiraKpi\Infrastructure\Atlassian\Jira;
+namespace Autarco\JiraKpi\Infrastructure\Atlassian\Jira;
 
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;

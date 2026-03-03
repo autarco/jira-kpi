@@ -6,7 +6,7 @@ services:
     volumes:
       - .:/var/www/html
     environment:
-      - PHP_IDE_CONFIG=serverName=marble-jira-kpi
+      - PHP_IDE_CONFIG=serverName=jira-kpi
       - XDEBUG_MODE=develop,debug
       - XDEBUG_TRIGGER=1
       - XDEBUG_CONFIG=idekey=PHPSTORM

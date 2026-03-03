@@ -1,14 +1,13 @@
 <?php
 
-namespace Marble\JiraKpi\Application\Console\Command;
+namespace Autarco\JiraKpi\Application\Console\Command;
 
 use Carbon\CarbonImmutable;
 use Marble\EntityManager\EntityManager;
-use Marble\JiraKpi\Domain\Model\Issue\Issue;
-use Marble\JiraKpi\Domain\Model\Issue\IssueType;
-use Marble\JiraKpi\Domain\Model\Issue\WorkCategory;
-use Marble\JiraKpi\Domain\Model\Result\MonthlyTimeSpent;
-use Marble\JiraKpi\Domain\Service\KpiCalculator\TimeAnalyzer;
+use Autarco\JiraKpi\Domain\Model\Issue\Issue;
+use Autarco\JiraKpi\Domain\Model\Issue\WorkCategory;
+use Autarco\JiraKpi\Domain\Model\Result\MonthlyTimeSpent;
+use Autarco\JiraKpi\Domain\Service\KpiCalculator\TimeAnalyzer;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
@@ -16,7 +15,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use function Marble\JiraKpi\Domain\div;
+use function Autarco\JiraKpi\Domain\div;
 use function Symfony\Component\String\u;
 
 #[AsCommand(name: 'app:time-spent')]

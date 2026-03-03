@@ -1,13 +1,13 @@
 <?php
 
-namespace Marble\JiraKpi\Domain\Model\Result;
+namespace Autarco\JiraKpi\Domain\Model\Result;
 
 use Carbon\CarbonImmutable;
-use Marble\JiraKpi\Domain\Model\Issue\Issue;
-use Marble\JiraKpi\Domain\Model\Issue\IssueTransition;
-use Marble\JiraKpi\Domain\Model\Issue\IssueType;
-use Marble\JiraKpi\Domain\Model\Unit\StoryPoint;
-use function Marble\JiraKpi\Domain\div;
+use Autarco\JiraKpi\Domain\Model\Issue\Issue;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueTransition;
+use Autarco\JiraKpi\Domain\Model\Issue\IssueType;
+use Autarco\JiraKpi\Domain\Model\Unit\StoryPoint;
+use function Autarco\JiraKpi\Domain\div;
 
 readonly class MonthlyRework
 {

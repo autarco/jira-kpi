@@ -4,8 +4,8 @@ namespace Domain\Model;
 
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
-use Marble\JiraKpi\Domain\Model\CarbonMixinTrait;
-use Marble\JiraKpi\Tests\AbstractTestCase;
+use Autarco\JiraKpi\Domain\Model\CarbonMixinTrait;
+use Autarco\JiraKpi\Tests\AbstractTestCase;
 
 class CarbonMixinTest extends AbstractTestCase
 {

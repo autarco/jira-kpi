@@ -1,9 +1,9 @@
 <?php
 
-namespace Marble\JiraKpi\Application;
+namespace Autarco\JiraKpi\Application;
 
 use Carbon\CarbonImmutable;
-use Marble\JiraKpi\Domain\Model\CarbonMixinTrait;
+use Autarco\JiraKpi\Domain\Model\CarbonMixinTrait;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 

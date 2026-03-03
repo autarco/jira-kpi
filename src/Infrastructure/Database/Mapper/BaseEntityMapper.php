@@ -1,6 +1,6 @@
 <?php
 
-namespace Marble\JiraKpi\Infrastructure\Database\Mapper;
+namespace Autarco\JiraKpi\Infrastructure\Database\Mapper;
 
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
@@ -19,7 +19,7 @@ use Marble\EntityManager\Write\DeleteContext;
 use Marble\EntityManager\Write\HasChanged;
 use Marble\EntityManager\Write\Persistable;
 use Marble\EntityManager\Write\WriteContext;
-use Marble\JiraKpi\Domain\Model\Unit\Unit;
+use Autarco\JiraKpi\Domain\Model\Unit\Unit;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionNamedType;
@@ -28,6 +28,11 @@ use Symfony\Component\Uid\AbstractUid;
 use UnitEnum;
 use function Symfony\Component\String\u;
 
+/**
+ * @template T of Entity
+ * @implements EntityReader<T>
+ * @implements EntityWriter<T>
+ */
 abstract class BaseEntityMapper implements EntityReader, EntityWriter
 {
     private array $reflectionProperties = [];

@@ -34,7 +34,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Marble\\JiraKpi\\": "src/"
+            "Autarco\\JiraKpi\\": "src/"
         },
         "files": [
             "src/Domain/functions.php"
@@ -42,7 +42,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Marble\\JiraKpi\\Tests\\": "tests/"
+            "Autarco\\JiraKpi\\Tests\\": "tests/"
         }
     },
     "replace": {

@@ -1,12 +1,12 @@
 <?php
 
-namespace Marble\JiraKpi\Domain\Model\Result;
+namespace Autarco\JiraKpi\Domain\Model\Result;
 
 use Carbon\CarbonImmutable;
-use Marble\JiraKpi\Domain\Model\Unit\Second;
-use Marble\JiraKpi\Domain\Model\Unit\StoryPoint;
-use function Marble\JiraKpi\Domain\array_avg;
-use function Marble\JiraKpi\Domain\div;
+use Autarco\JiraKpi\Domain\Model\Unit\Second;
+use Autarco\JiraKpi\Domain\Model\Unit\StoryPoint;
+use function Autarco\JiraKpi\Domain\array_avg;
+use function Autarco\JiraKpi\Domain\div;
 
 readonly class MonthlyBugCreation
 {
